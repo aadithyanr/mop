@@ -60,10 +60,10 @@ func getPrunableFolders(root string) ([]string, []string) {
 			}
 			if old {
 				if hasNodeModules {
-          fmt.Println("\x1b[32m-", next[3:], "\x1b[0m")
+					next = filepath.Join(next, "node_modules")
 					jsPrunable = append(jsPrunable, next)
 				} else {
-          fmt.Println("\x1b[33m-", next[3:], "\x1b[0m")
+					next = filepath.Join(next, "target")
 					rsPrunable = append(rsPrunable, next)
 				}
 			}
@@ -75,9 +75,19 @@ func getPrunableFolders(root string) ([]string, []string) {
 
 func main() {
 	jsPrunable, rsPrunable := getPrunableFolders("../")
+	fmt.Printf("\x1b[31mFound %v JavaScript projects and %v Rust projects that were last modified >%v days ago.\n\x1b[0m",
+		len(jsPrunable),
+		len(rsPrunable),
+		Threshold)
+	for _, folder := range jsPrunable {
+		fmt.Print("\x1b[32m", folder, " -> Delete? (Y/N)", "\x1b[0m")
+		var inp string
+		fmt.Scanf("%v", inp)
+	}
 
-	fmt.Printf("\x1b[31mFound %v JavaScript projects and %v Rust projects that were last modified >%v days ago.\n\x1b[0mProceed to delete node_modules and target folders?", len(jsPrunable), len(rsPrunable), Threshold)
-	fmt.Print(" (Y/N) ")
-	var inp string
-	fmt.Scanf("%v", inp)
+	for _, folder := range rsPrunable {
+		fmt.Print("\x1b[33m", folder, " -> Delete? (Y/N)", "\x1b[0m")
+		var inp string
+		fmt.Scanf("%v", inp)
+	}
 }

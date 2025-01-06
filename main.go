@@ -9,6 +9,15 @@ import (
 
 const Threshold = 256
 
+func deleteFolder(path string) {
+	err := os.RemoveAll(path)
+	if err != nil {
+		fmt.Println("Failed to Delete", path)
+	} else {
+		fmt.Println("Cleared ", path)
+	}
+}
+
 func getPrunableFolders(root string) ([]string, []string) {
 	entries, err := os.ReadDir(root)
 	var jsPrunable []string
@@ -51,7 +60,7 @@ func getPrunableFolders(root string) ([]string, []string) {
 				}
 				if !file.IsDir() {
 
-					if time.Now().Sub(info.ModTime()).Hours() < Threshold*24{
+					if time.Now().Sub(info.ModTime()).Hours() < Threshold*24 {
 						old = false
 						break
 					}
@@ -80,14 +89,20 @@ func main() {
 		len(rsPrunable),
 		Threshold)
 	for _, folder := range jsPrunable {
-		fmt.Print("\x1b[32m", folder, " -> Delete? (Y/N)", "\x1b[0m")
+		fmt.Print("\x1b[32m", folder, " -> Delete? (Y/N) ", "\x1b[0m")
 		var inp string
-		fmt.Scanf("%v", inp)
+		fmt.Scanln(&inp)
+		if inp == "Y" {
+			deleteFolder(folder)
+		}
 	}
 
 	for _, folder := range rsPrunable {
-		fmt.Print("\x1b[33m", folder, " -> Delete? (Y/N)", "\x1b[0m")
+		fmt.Print("\x1b[33m", folder, " -> Delete? (Y/N) ", "\x1b[0m")
 		var inp string
-		fmt.Scanf("%v", inp)
+		fmt.Scanln(&inp)
+		if inp == "Y" {
+			deleteFolder(folder)
+		}
 	}
 }

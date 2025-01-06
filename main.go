@@ -51,7 +51,7 @@ func getPrunableFolders(root string) ([]string, []string) {
 				}
 				if !file.IsDir() {
 
-					if time.Now().Sub(info.ModTime()).Seconds() < Threshold*24*3600 {
+					if time.Now().Sub(info.ModTime()).Hours() < Threshold*24{
 						old = false
 						break
 					}
